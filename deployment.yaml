@@ -1,25 +1,48 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Pod
 metadata:
-  creationTimestamp: null
+  name: nginx
+  namespace: argocd-nginx
   labels:
     app: nginx
-  name: nginx
 spec:
-  replicas: 1
+  containers:
+  - name: nginx
+    image: 222381687585.dkr.ecr.eu-west-2.amazonaws.com/argocd:4
+    ports:
+    - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: argocd-nginx
+spec:
   selector:
-    matchLabels:
-      app: nginx
-  strategy: {}
-  template:
-    metadata:
-      creationTimestamp: null
-      labels:
-        app: nginx
-    spec:
-      containers:
-      - image: nginx:latest
-        name: nginx
-        resources: {}
-status: {}
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  namespace: argocd-nginx
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: argocd-nginx.digivalet.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx
+            port:
+              number: 80
 
