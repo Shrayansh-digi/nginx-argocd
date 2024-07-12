@@ -8,7 +8,7 @@ metadata:
 spec:
   containers:
   - name: nginx
-    image: 222381687585.dkr.ecr.eu-west-2.amazonaws.com/argocd:30
+    image: 222381687585.dkr.ecr.eu-west-2.amazonaws.com/argocd:31
     ports:
     - containerPort: 80
 ---
